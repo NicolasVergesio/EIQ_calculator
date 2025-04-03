@@ -48,13 +48,14 @@ ui <- dashboardPage(
              #box(uiOutput("my_image"), width = NULL, height = 12, solidHeader = FALSE, headerBorder = FALSE)),
       
       column(8,
-             box(title = "KPI", status = "primary", solidHeader = TRUE, background = "gray", width = NULL, height = NULL, collapsible = FALSE, collapsed = FALSE,
+             box(title = "KPI", status = "primary", solidHeader = TRUE, background = "gray", width = NULL, height = "100px", collapsible = FALSE, collapsed = FALSE,
                  valueBoxOutput("value_box_eiq", width = 3),
                  valueBoxOutput("value_box_ecologycal", width = 3),
                  valueBoxOutput("value_box_farmworker", width = 3),
                  valueBoxOutput("value_box_consumers", width = 3)),
-             box(title = "Pesticide Table", status = "info", solidHeader = TRUE, background = "gray", width = NULL, height = NULL, collapsible = FALSE, collapsed = FALSE),
-             DT::dataTableOutput("tabla_pesticidas")))
+             br(), br(), 
+             box(title = "Pesticide Table", status = "info", solidHeader = TRUE, background = NULL, width = NULL, height = NULL, collapsible = FALSE, collapsed = FALSE,
+             DT::dataTableOutput("tabla_pesticidas"))))
   ),
   
   tabItem(tabName = "calculadora",
@@ -136,7 +137,7 @@ server <- function(input, output, session) {
     
     filtered_data <- data[data$Pesticide_type == selected_type, ]
     
-    DT::datatable(filtered_data)
+    DT::datatable(filtered_data, options = list(scrollX=TRUE, scrollCollapse=TRUE))
     
   })
   
