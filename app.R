@@ -15,8 +15,36 @@ data <- data.frame(
 )
 
 
+#Diferentes medidas posibles
+units <- c("grams (g)", "kilograms (kg)", "liters (l)", "milliliters (ml)", 
+           "pounds (lb)", "dry ounces (oz)", "fluid ounces (fl oz)", "gallons (gal)")
 
 
+# Crear una matriz de conversiones entre varias unidades
+equivalencias <- matrix(c(
+  #g
+  1, 0.001, 0.001, 1, 0.0022, 0.03527396, 0.0351951 , 0.000264172,
+  #kg
+  1000, 1, 1, 1000, 2.20462 , 35.27396 , 35.1951 , 0.264172,
+  #l
+  1000, 1, 1, 1000, 2.20462, 35.27396, 35.1951, 0.264172 ,
+  #ml
+  1, 0.001, 0.001, 1, 0.0022, 0.03527396, 0.0351951 , 0.000264172,
+  #lb
+  453.592 , 0.453592 , 0.453592, 453.592 , 1, 16 , 16 , 0.00220462,
+  #dry oz
+  28.3495 , 0.0283495 , 0.0283495 , 28.3495, 0.0625 ,1  , 1.04167 , 0.0000156 ,
+  #fl oz
+  29.5735, 0.0295735 , 0.0295735, 29.5735 , 0.0351951, 0.0625, 1, 0.0000078125 , 
+  #gal
+  3785.41, 3.78541 , 3.78541 , 3785.41, 8.34 , 128 , 128 , 1
+), nrow = 8, byrow = TRUE)
+
+# Asignar nombres a las filas y columnas de la matriz
+rownames(equivalencias) <- units
+colnames(equivalencias) <- units
+# Ver la matriz
+equivalencias
 
 
 
@@ -62,7 +90,11 @@ ui <- dashboardPage(
           fluidRow(
             column(6,
                    box(title = "Pesticida 1", width = 12,solidHeader = TRUE, status = "primary", collapsible = FALSE,
-                       selectInput("pest_1", "Elegir pesticida", selected = NULL, multiple = FALSE, choices = unique(data$Pesticide_type)))),
+                       selectInput("pest_1", "Elegir pesticida", selected = NULL, multiple = FALSE, choices = unique(data$Pesticide_type)),
+                       numericInput("pest_percent_1", "Ingrediente activo %", value =  NA, min = 0, max = 100),
+                       numericInput("´product_rate_1", "Taza de aplicación (pesticida / área)", value =  NA),
+                       selectInput("product_meas_1", "Unidad de aplicación del pesticida", selected = "", choices = c("", units)),
+                       numericInput("area_1", "Unidad del área de aplicación", value = NA))),
             column(6,
                    box(title = "Pesticida 2", width = 12,solidHeader = TRUE, status = "primary", collapsible = FALSE))),
           fluidRow(
