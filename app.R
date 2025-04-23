@@ -48,6 +48,24 @@ equivalencias
 
 
 
+#Diferentes areas posibles
+area_units <- c("ft2", "m2", "acre", "hectare")
+
+area_equivalencia <- matrix(c(
+  #ft2
+  1, 0.0929, 0.00002296, 0.00000929,
+  #m2
+  10.7639, 1,	0.0002471,	0.0001,
+  #acre
+  43560,	4046.86,	1,	0.4047,
+  #hectare
+  107639,	10000,	2.471,	1
+), nrow = 4, byrow = TRUE)
+
+rownames(area_equivalencia) <- area_units
+colnames(area_equivalencia) <- area_units
+
+
 ui <- dashboardPage(
   
   #Texto de cabecera
@@ -90,18 +108,31 @@ ui <- dashboardPage(
           fluidRow(
             column(6,
                    box(title = "Pesticida 1", width = 12,solidHeader = TRUE, status = "primary", collapsible = FALSE,
-                       selectInput("pest_1", "Elegir pesticida", selected = NULL, multiple = FALSE, choices = unique(data$Pesticide_type)),
+                       selectInput("pest_1", "Elegir pesticida", selected = NULL, multiple = FALSE, choices = c("---",unique(data$Active))),
                        numericInput("pest_percent_1", "Ingrediente activo %", value =  NA, min = 0, max = 100),
                        numericInput("´product_rate_1", "Taza de aplicación (pesticida / área)", value =  NA),
                        selectInput("product_meas_1", "Unidad de aplicación del pesticida", selected = "", choices = c("", units)),
-                       numericInput("area_1", "Unidad del área de aplicación", value = NA))),
+                       selectInput("area_1", "Unidad del área de aplicación", selected = "", choices = c("", area_units)))),
             column(6,
-                   box(title = "Pesticida 2", width = 12,solidHeader = TRUE, status = "primary", collapsible = FALSE))),
+                   box(title = "Pesticida 2", width = 12,solidHeader = TRUE, status = "primary", collapsible = FALSE,
+                       selectInput("pest_2", "Elegir pesticida", selected = NULL, multiple = FALSE, choices = c("---",unique(data$Active))),
+                       numericInput("pest_percent_2", "Ingrediente activo %", value =  NA, min = 0, max = 100),
+                       numericInput("´product_rate_2", "Taza de aplicación (pesticida / área)", value =  NA),
+                       selectInput("product_meas_2", "Unidad de aplicación del pesticida", selected = "", choices = c("", units)),
+                       selectInput("area_2", "Unidad del área de aplicación", selected = "", choices = c("", area_units)))),
+            br(), br(), br(),
           fluidRow(
-            box(width = 12)
+            column(6, 
+                   actionButton("calcu", "Calculate", class = "btn-warning"), align = "right"),
+            column(6, 
+                   actionButton("del", "Delete", class = "btn-white"), align = "left")
+    
           ),
+          br(), 
           fluidRow(
-            box(width = 12)
+            column(12,
+                   textOutput("text"), align = "center")
+          ),
           )))),
                    
   
@@ -150,6 +181,7 @@ server <- function(input, output, session) {
   
   
   
+  ###First tab
   
   #Filtrar y actualizar los pesticidas disponibles de acuerdo a la categoría seleccionada.
   
@@ -209,8 +241,21 @@ server <- function(input, output, session) {
   })
   
   
+  ###Second Tab
+  # 
+  # pest_choiced_1 <- eventReactive({
+  #   
+  #   selected_pesticide <- input$pest_1
+  #   data[data$Active == selected_pesticide, 1]
+  #   output$value_box_selected_pest <- renderValueBox({
+  #     valueBox(selected_pesticide, subtitle = "hola")
+  #   
+  # })
+  # 
+  # })
+  # 
   
-  
+  output$text <- renderText("hello!")
   
   
 }
